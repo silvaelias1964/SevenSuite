@@ -1,0 +1,171 @@
+﻿@model IEnumerable<Application.Models.SeveClieModel>
+@{
+
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <H1>Registros</H1>
+        </div>
+        <!-- Mostrar mensaje si se ejecuto una operacion correctamente -->
+        @if (TempData["mensaje"] != null)
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                @TempData["mensaje"]
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+        <div class="col-md-6">
+            <button type="button" id="Add" class="btn bg-slate-600 btn-labeled btn-sm" data-toggle="tooltip" title="Agregar registro">
+                <b>
+                    <i class="btn-dark btn-sm"> Nuevo</i>
+                </b>
+            </button>
+            <button type="button" id="Edit" class="btn bg-slate-600 btn-labeled btn-sm" data-toggle="tooltip" title="Editar registro">
+                <b>
+                    <i class="btn-dark btn-sm"> Editar</i>
+                </b>
+            </button>
+            <button type="button" id="See" class="btn bg-slate-600 btn-labeled btn-sm" data-toggle="tooltip" title="Ver registro">
+                <b>
+                    <i class="btn-dark btn-sm"> Ver</i>
+                </b>
+            </button>
+            <button type="button" id="Del" class="btn bg-slate-600 btn-labeled btn-sm" data-toggle="tooltip" title="Borrar registro">
+                <b>
+                    <i class="btn-danger btn-sm"> Borrar</i>
+                </b>
+            </button>
+            <button type="button" id="Rep" class="btn bg-slate-600 btn-labeled btn-sm" data-toggle="tooltip" title="Reporte">
+                <b>
+                    <i class="btn-dark btn-sm"> Reporte</i>
+                </b>
+            </button>
+            <button type="button" id="Out" class="btn bg-slate-600 btn-labeled btn-sm" data-toggle="tooltip" title="Salir al Home">
+                <b>
+                    <i class="btn-dark btn-sm"> Salir</i>
+                </b>
+            </button>            
+        </div>
+    </div>    
+</div>
+
+
+<div class="card mb-4">
+    <table class="table table-bordered" id="dataTable">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Cedula
+                </th>
+                <th>
+                    Nombre
+                </th>
+                <th>
+                    Genero
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.id_clie)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.cedula)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.genero)
+                    </td>
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@section Scripts {
+@*     <script src="~/lib/common/libreria.js"></script> *@
+    <script type='text/javascript'>
+
+
+        $(document).ready(function () {
+
+            $('#dataTable').DataTable({
+                language: {
+                    url: '/lib/datatables/Spanish.json',
+                },
+                select: {
+                    style: 'single'
+                }
+            });
+
+            var table = $('#dataTable').DataTable();
+            $('#dataTable tbody').on('click', 'tr', function () {
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                } else {
+                    table.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+            });
+
+            $('#Add, #See, #Del, #Edit, #Out, #Rep').click(function () {
+                var table = $('#dataTable').DataTable();
+                var row = table.row('.selected');
+                var data = $('#dataTable').dataTable().fnGetData(row);
+
+                if (this.id == 'Add') {
+                    window.location.href = "/Registro/Create";
+                }
+                else if (this.id == 'See') {
+
+                    if (data[0] == null)
+                        alert('No hay registro seleccionado');
+                    else
+                        window.location.href = "/Registro/See/" + data[0];
+                }
+                else if (this.id == 'Del') {
+
+                    if (data[0] == null)
+                        alert('No hay registro seleccionado');
+                    else
+                        window.location.href = "/Registro/Delete/" + data[0];
+                }
+                else if (this.id == 'Edit') {
+                    if (data[0] == null)
+                        alert('No hay registro seleccionado');
+                    else
+                        window.location.href = "/Registro/Edit/" + data[0];
+
+                }
+                else if (this.id == 'Out') {
+                    window.location.href = "/Home/Index";
+
+                }
+                else if (this.id == 'Rep') {
+                    window.location.href = "/Registro/Reporte";
+
+                }
+
+            });
+
+        });
+
+    </script>
+}
+
+
+
